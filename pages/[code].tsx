@@ -12,6 +12,14 @@ export default function Home() {
   const [products, setProducts] = useState([])
   const [quantities, setQuantites] = useState([])
   const [total, setTotal] = useState(0)
+  const [orderInfo, setOrderInfo] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    address: "",
+    country: "",
+    zip: "",
+  })
   const router = useRouter()
   const { code } = router.query
 
@@ -38,11 +46,34 @@ export default function Home() {
       if (q.product_id == product_id) {
         return {
           ...q,
-          quantity
+          quantity: Number(quantity)
         }
       }
       return q
     }))
+  }
+
+  const handleOrderInfo = (e: any) => {
+    setOrderInfo({ ...orderInfo, [e.target.name]: e.target.value })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (total === 0) {
+      alert("Your order total is 0")
+      return
+    }
+    try {
+      const { data } = await axios.post(`${defaults.checkoutAPI}/orders`, {
+        ...orderInfo,
+        code,
+        products: quantities
+      })
+      console.log("order data ", data)
+      alert("Order created ")
+    } catch (e) {
+      alert("Failed to create order")
+    }
   }
 
   return (
@@ -82,11 +113,11 @@ export default function Home() {
           </div>
           <div className="col-md-7 col-lg-8">
             <h4 className="mb-3">Billing address</h4>
-            <form className="needs-validation">
+            <form className="needs-validation" onSubmit={handleSubmit}>
               <div className="row g-3">
                 <div className="col-sm-6">
                   <label htmlFor="firstName" className="form-label">First name</label>
-                  <input type="text" className="form-control" id="firstName" placeholder="" value="" required />
+                  <input type="text" className="form-control" name="first_name" placeholder="" value={orderInfo.first_name} required onChange={handleOrderInfo} />
                   <div className="invalid-feedback">
                     Valid first name is required.
                   </div>
@@ -94,7 +125,7 @@ export default function Home() {
 
                 <div className="col-sm-6">
                   <label htmlFor="lastName" className="form-label">Last name</label>
-                  <input type="text" className="form-control" id="lastName" placeholder="" value="" required />
+                  <input type="text" className="form-control" name="last_name" placeholder="" value={orderInfo.last_name} required onChange={handleOrderInfo} />
                   <div className="invalid-feedback">
                     Valid last name is required.
                   </div>
@@ -103,7 +134,7 @@ export default function Home() {
 
                 <div className="col-12">
                   <label htmlFor="email" className="form-label">Email</label>
-                  <input type="email" className="form-control" id="email" placeholder="you@example.com" required />
+                  <input type="email" className="form-control" name="email" placeholder="you@example.com" required onChange={handleOrderInfo} />
                   <div className="invalid-feedback">
                     Please enter a valid email address for shipping updates.
                   </div>
@@ -111,7 +142,7 @@ export default function Home() {
 
                 <div className="col-12">
                   <label htmlFor="address" className="form-label">Address</label>
-                  <input type="text" className="form-control" id="address" placeholder="1234 Main St" required />
+                  <input type="text" className="form-control" name="address" placeholder="1234 Main St" required onChange={handleOrderInfo} />
                   <div className="invalid-feedback">
                     Please enter your shipping address.
                   </div>
@@ -119,12 +150,12 @@ export default function Home() {
 
                 <div className="col-12">
                   <label htmlFor="city" className="form-label">City</label>
-                  <input type="text" className="form-control" id="city" placeholder="eg Manhattom" required />
+                  <input type="text" className="form-control" name="city" placeholder="eg Manhattom" required onChange={handleOrderInfo} />
                 </div>
 
                 <div className="col-md-5">
                   <label htmlFor="country" className="form-label">Country</label>
-                  <input type="text" className="form-control" id="country" placeholder="eg USA" required />
+                  <input type="text" className="form-control" name="country" placeholder="eg USA" required onChange={handleOrderInfo} />
                   <div className="invalid-feedback">
                     Please enter a valid country.
                   </div>
@@ -132,7 +163,7 @@ export default function Home() {
 
                 <div className="col-md-3">
                   <label htmlFor="zip" className="form-label">Zip</label>
-                  <input type="text" className="form-control" id="zip" placeholder="" required />
+                  <input type="text" className="form-control" name="zip" placeholder="" required onChange={handleOrderInfo} />
                   <div className="invalid-feedback">
                     Zip code required.
                   </div>
@@ -143,6 +174,7 @@ export default function Home() {
 
               <button className="w-100 btn btn-primary btn-lg mb-4" type="submit">Continue to checkout</button>
             </form>
+
           </div>
         </div>
       </main>
