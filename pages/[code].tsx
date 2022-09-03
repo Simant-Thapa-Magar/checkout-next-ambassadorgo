@@ -20,6 +20,15 @@ export default function Home() {
     country: "",
     zip: "",
   })
+  const [esewaObj, setEsewaObj] = useState({
+    tAmt: 0,
+    amt: 0,
+    txAmt: 0,
+    psc: 0,
+    pdc: 0,
+    pid: "",
+    su: ""
+  })
   const router = useRouter()
   const { code } = router.query
 
@@ -69,12 +78,23 @@ export default function Home() {
         code,
         products: quantities
       })
-      console.log("order data ", data)
-      alert("Order created ")
+      setEsewaObj({
+        tAmt: data.total,
+        amt: data.total,
+        txAmt: 0,
+        psc: 0,
+        pdc: 0,
+        pid: `${defaults.orderInitial}_${data.id}`,
+        su: `http://localhost:3002/success/${code}`
+      })
     } catch (e) {
       alert("Failed to create order")
     }
   }
+
+  useEffect(() => {
+    if (esewaObj.tAmt && esewaObj.amt && esewaObj.pid && esewaObj.su) document.getElementById("esewaSubmitForm").click()
+  }, [esewaObj])
 
   return (
     <Layout>
@@ -174,7 +194,18 @@ export default function Home() {
 
               <button className="w-100 btn btn-primary btn-lg mb-4" type="submit">Continue to checkout</button>
             </form>
-
+            <form action="https://uat.esewa.com.np/epay/main" method="POST" id="esewaForm">
+              <input value={esewaObj.tAmt} name="tAmt" type="hidden" />
+              <input value={esewaObj.amt} name="amt" type="hidden" />
+              <input value={esewaObj.txAmt} name="txAmt" type="hidden" />
+              <input value={esewaObj.psc} name="psc" type="hidden" />
+              <input value={esewaObj.pdc} name="pdc" type="hidden" />
+              <input value="EPAYTEST" name="scd" type="hidden" />
+              <input value={esewaObj.pid} name="pid" type="hidden" />
+              <input value={esewaObj.su} type="hidden" name="su" />
+              <input value="http://localhost:3002/error" type="hidden" name="fu" />
+              <input type="submit" id="esewaSubmitForm" style={{ display: "none" }} />
+            </form>
           </div>
         </div>
       </main>

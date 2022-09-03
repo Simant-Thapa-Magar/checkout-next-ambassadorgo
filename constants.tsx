@@ -1,5 +1,6 @@
 const constant = {
-    checkoutAPI: "http://localhost:4000/api/checkout"
+    checkoutAPI: "http://localhost:4000/api/checkout",
+    orderInitial: "goReactNext"
 }
 
 export default constant

@@ -19,8 +19,61 @@ a {
   html {
     color-scheme: dark;
   }
+
   body {
     color: white;
     background: black;
   }
+}
+
+.payment {
+  border: 1px solid #f2f2f2;
+  height: 280px;
+  border-radius: 20px;
+  background: #fff;
+}
+
+.payment_header {
+  background: rgba(255, 102, 0, 1);
+  padding: 20px;
+  border-radius: 20px 20px 0px 0px;
+
+}
+
+.check {
+  margin: 0px auto;
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  background: #fff;
+  text-align: center;
+}
+
+.check i {
+  vertical-align: middle;
+  line-height: 50px;
+  font-size: 30px;
+}
+
+.content {
+  text-align: center;
+}
+
+.content h1 {
+  font-size: 25px;
+  padding-top: 25px;
+}
+
+.error-template {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+.error-actions {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.error-actions .btn {
+  margin-right: 10px;
 }
